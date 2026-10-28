@@ -8,7 +8,7 @@
 namespace Nette\Routing;
 
 use Nette;
-use function array_column, array_filter, array_keys, array_reverse, array_splice, count, explode, ip2long, is_scalar, rtrim, strtr;
+use function array_column, array_keys, array_reverse, array_splice, count, explode, ip2long, is_scalar, rtrim, strtr;
 
 
 /**
@@ -157,8 +157,10 @@ class RouteList implements Router
 				? $router->getConstantParameters()
 				: [];
 
-			foreach (array_filter($params, is_scalar(...)) as $name => $value) {
-				$candidates[$name][(string) $value] = true;
+			foreach ($params as $name => $value) {
+				if (is_scalar($value)) {
+					$candidates[$name][(string) $value] = true;
+				}
 			}
 
 			$routers[] = [$router, $params];
