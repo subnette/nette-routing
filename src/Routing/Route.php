@@ -206,7 +206,11 @@ class Route implements Router
 			$path .= '/';
 		}
 
-		if (!$matches = Strings::match($path, $re)) {
+		if (!($ok = preg_match($re, $path, $matches))) {
+			if ($ok === false) { // error: let Strings::match() report it
+				Strings::match($path, $re);
+			}
+
 			return null; // stop, not matched
 		}
 
