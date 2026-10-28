@@ -95,6 +95,8 @@ class Route implements Router
 
 	private bool $strictDefaults = false;
 
+	private static ?string $querySeparator = null;
+
 
 	/**
 	 * @param string  $mask e.g. '<presenter>/<action>/<id \d{1,3}>'
@@ -305,8 +307,8 @@ class Route implements Router
 
 		// build query string
 		$params = self::renameKeys($params, $this->xlat);
-		$sep = ini_get('arg_separator.input');
-		$query = http_build_query($params, '', $sep ? $sep[0] : '&');
+		self::$querySeparator ??= ($sep = ini_get('arg_separator.input')) ? $sep[0] : '&'; // PHP_INI_PERDIR, cannot change at runtime
+		$query = http_build_query($params, '', self::$querySeparator);
 		if ($query !== '') {
 			$url .= '?' . $query;
 		}
